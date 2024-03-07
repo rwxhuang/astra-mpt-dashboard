@@ -153,7 +153,7 @@ class MPT:
             for line in cov_matrix:
                 txt_file.write("".join(str(line)[1:-1]) + "\n")
 
-        eng = matlab.engine.start_matlab()
+        eng = matlabengine.start_matlab()
         eng.myScript(nargout=0)
     
     def get_tech_projects(self, tech_projects_filename):
