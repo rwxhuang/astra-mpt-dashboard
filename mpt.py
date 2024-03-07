@@ -116,15 +116,6 @@ class MPT:
         # Output new csv file with calculated values
         tech_projs_df.to_csv('./data/tech_projects_out.csv', index=False)
 
-        # GRAPH 1/2 - Expected return VS Standard Deviation
-        plt.scatter(tech_projs_df['value1_norm_var'] ** 0.5, tech_projs_df['value1_norm_mean'], color='blue', marker='o')
-
-        for i, txt in enumerate(tech_projs_df.iloc[:,0]):
-            plt.annotate(txt, ((tech_projs_df['value1_norm_var'] ** 0.5)[i], tech_projs_df['value1_norm_mean'][i]))
-        plt.xlabel('Standard Deviation')
-        plt.ylabel('Expected Return')
-        plt.savefig('./out/mpt_graph_1_2.png')
-
         # TODO - Get the correlation matrices and covariance matrices
         ## Correlation coeffs
         corr_matrix = {}
