@@ -153,7 +153,7 @@ class MPT:
             for line in cov_matrix:
                 txt_file.write("".join(str(line)[1:-1]) + "\n")
 
-        eng = matlabengine.start_matlab()
+        eng = matlab.engine.start_matlab()
         eng.myScript(nargout=0)
     
     def get_tech_projects(self, tech_projects_filename):
@@ -162,3 +162,6 @@ class MPT:
 
         return list(tech_projs_df['Name'])
         
+    def update_invest_fracs(self, min_invest_frac, max_invest_frac):
+        with open("./data/bounds.txt", "w") as txt_file:
+            txt_file.write(str(min_invest_frac) + ", " + str(max_invest_frac))

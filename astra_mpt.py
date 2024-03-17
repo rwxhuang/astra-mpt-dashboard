@@ -8,15 +8,6 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import pandas as pd
 import numpy as np
-import scipy
-from scipy.optimize import curve_fit
-import matplotlib.pyplot as plt
-import matlab
-import matlabengine
-import random
-from datetime import datetime
-from itertools import combinations
-import math
 
 st.set_page_config(
     page_title="ASTRA MPT Dashboard",
@@ -58,7 +49,19 @@ def get_all_pie_charts(df):
         fig.add_trace(pie_chart(i), row=row, col= i % _NUM_COLS + 1)
 
     fig.update_traces(textposition='inside')
-    fig.update_layout(height=2400)
+    fig.update_layout(height=2400, 
+                      legend_title="Legend",
+        font=dict(
+            size=12
+        ),legend=dict(
+            orientation="h",
+            entrywidth=60,
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1
+        )
+        )
     return fig
 
 
@@ -74,16 +77,27 @@ def scatter_plot():
     for i in range(len(matrix)):
         df = df._append({'Mean of Portfolio Returns': matrix[i][0], 'Standard Deviation of Portfolio Returns': matrix[i][1]}, ignore_index=True)
     trace1 = go.Scatter(x=df['Mean of Portfolio Returns'], y=df['Standard Deviation of Portfolio Returns'], mode='lines+markers', name='Portfolio (#) Return Risk')
-    trace2 = go.Scatter(x=list(np.sqrt(tech_projs_df['value1_norm_var'])), y=list(tech_projs_df['value1_norm_mean']), mode='markers', name='Technology Project Return/Risk', text=tech_projs_df['Name'], line=dict(color="red"))
+    trace2 = go.Scatter(x=list(np.sqrt(tech_projs_df['value1_norm_var'])), y=list(tech_projs_df['value1_norm_mean']), mode='markers', name='Technology Project Return/Risk')
     fig = make_subplots()
     fig.add_trace(trace1)
     fig.add_trace(trace2)
+    fig.update_traces(line={'width': 5},
+                      marker=dict(size=8,
+                              line=dict(width=1, color='DarkSlateGrey')))
     fig.update_layout(
         xaxis_title="Mean of Portfolio Returns",
         yaxis_title="Standard Deviation of Portfolio Returns",
-        legend_title="Legend",
-        font=dict(
-            size=12
+        legend_title=dict(
+            font = dict(size = 16),
+            )
+        ,legend=dict(
+            orientation="h",
+            font = dict(size = 14),
+            entrywidth=200,
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1
         )
     )
     return fig
@@ -92,6 +106,7 @@ def scatter_plot():
 
 with st.sidebar:
     st.title('🚀 ASTRA MPT Dashboard')
+    st.text("Dataset Information:")
     step1 = st.container(border=True)
     dataset = step1.file_uploader('Select Dataset')
 
@@ -99,16 +114,18 @@ with st.sidebar:
     word_columns = m.get_instrument_options_cols()
     num_columns = m.get_cols()
 
-    step2 = st.container(border=True)
-    selected_tech_proj_var = step2.selectbox('Select a technology project variable from the dataset.', word_columns, index=7)
-    selected_time_variable = step2.selectbox('Select a time numerical variable from the dataset.', num_columns, index=1)
-    step2.write("Available numerical variables:")
-    step2.code('\n'.join(num_columns))
-    custom_function_name = step2.text_input('Custom Formula using numerical variables above', value='(1 / Resolution_m) / Mass_kg')
+    selected_tech_proj_var = step1.selectbox('Select a technology project variable from the dataset.', word_columns, index=7)
+    selected_time_variable = step1.selectbox('Select a time numerical variable from the dataset.', num_columns, index=1)
+    step1.write("Available numerical variables:")
+    step1.code('\n'.join(num_columns))
+    custom_function_name = step1.text_input('Custom Formula using numerical variables above', value='(1 / Resolution_m) / Mass_kg')
 
-    st.text("Required Parameters:")
+    st.text("Technology Projects Information:")
     step3 = st.container(border=True)
     tech_projects = step3.file_uploader('Upload Technology Projects')
+    min_invest_frac = step3.slider("Select minimum investment percentage", 0, 100, value=0) / 100
+    max_invest_frac = step3.slider("Select maximum investment percentage", 0, 100, value=100) / 100
+    m.update_invest_fracs(min_invest_frac, max_invest_frac)
     custom_matrix = step3.file_uploader('Upload Custom Matrix Completion Factors')
 
     st.text("Optional Custom Modifications:")
@@ -164,10 +181,5 @@ with col[1]:
     st.markdown("#### Pie Charts for First 10 Calculated Portfolios")
     pie_charts = get_all_pie_charts(pwgt_df)
     st.plotly_chart(pie_charts, use_container_width=True, use_container_height=True)
-    # st.image("./out/mpt_graph_1_2.png")
-    # st.markdown("##### Extracting Portfolio #4")
-    # st.image("./out/mpt_graph_3.png")
-    # st.image("./out/mpt_graph_4.png")
-    # st.image("./out/mpt_graph_6.png")
 # except:
     # st.error('Invalid input. Please try something else.', icon="🚨")

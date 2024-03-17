@@ -2,12 +2,20 @@
 tech_projs_df = readtable('./data/tech_projects_out.csv');
 format long g
 CovMatrix_Value1_norm = readmatrix('./data/cov_matrix.txt')
+bounds = readmatrix('./data/bounds.txt')
 % Create portfolios
 p1=Portfolio('AssetList', tech_projs_df.Name);
 p1=Portfolio(p1,'assetmean',tech_projs_df.value1_norm_mean,'AssetCovar',CovMatrix_Value1_norm);
 p1=Portfolio(p1,'LowerBudget',1,'UpperBudget',1,'lowerbound',0);
 nPortfolios=20;
-pwgt1 = estimateFrontier(p1,nPortfolios) ;
+lowerbounds = zeros(1, height(tech_projs_df)) + bounds(1, 1);
+upperbounds= zeros(1, height(tech_projs_df)) + bounds(1, 2);
+display(lowerbounds)
+display(upperbounds)
+
+p1_bound_minAssets = setMinMaxNumAssets(p1, 2, []);
+p1_bound=setBounds(p1_bound_minAssets,lowerbounds, upperbounds, 'BoundType','Conditional');
+pwgt1 = estimateFrontier(p1_bound,nPortfolios) ;
 for i=1:size(pwgt1,2)
     PortfolioReturns1(i)=tech_projs_df.value1_norm_mean'*pwgt1(:,i);
 end
