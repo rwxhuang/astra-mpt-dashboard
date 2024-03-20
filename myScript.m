@@ -8,10 +8,8 @@ p1=Portfolio('AssetList', tech_projs_df.Name);
 p1=Portfolio(p1,'assetmean',tech_projs_df.value1_norm_mean,'AssetCovar',CovMatrix_Value1_norm);
 p1=Portfolio(p1,'LowerBudget',1,'UpperBudget',1,'lowerbound',0);
 nPortfolios=20;
-lowerbounds = zeros(1, height(tech_projs_df)) + bounds(1, 1);
-upperbounds= zeros(1, height(tech_projs_df)) + bounds(1, 2);
-display(lowerbounds)
-display(upperbounds)
+lowerbounds = bounds(1);
+upperbounds= bounds(2);
 
 p1_bound_minAssets = setMinMaxNumAssets(p1, 2, []);
 p1_bound=setBounds(p1_bound_minAssets,lowerbounds, upperbounds, 'BoundType','Conditional');

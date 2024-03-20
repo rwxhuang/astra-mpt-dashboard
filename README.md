@@ -84,7 +84,12 @@ _Below is an example of how you can instruct your audience on installing and set
 2. Install necessary packages
    ```sh
    pip install requirements.txt
-   ```
+     ```
+
+3. Run the following command
+    ```sh
+    python3 -m streamlit run astra_mpt.py
+    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

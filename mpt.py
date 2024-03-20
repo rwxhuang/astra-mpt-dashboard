@@ -162,6 +162,14 @@ class MPT:
 
         return list(tech_projs_df['Name'])
         
-    def update_invest_fracs(self, min_invest_frac, max_invest_frac):
+    def update_invest_fracs(self, min_invest_fracs_str, max_invest_fracs_str, bound):
+        min_invest_fracs = min_invest_fracs_str.split(' | ')
+        max_invest_fracs = max_invest_fracs_str.split(' | ')
+        if len(min_invest_fracs) != bound or len(max_invest_fracs) != bound:
+            raise Exception('Number of projects does not match number of percentages')
         with open("./data/bounds.txt", "w") as txt_file:
-            txt_file.write(str(min_invest_frac) + ", " + str(max_invest_frac))
+            for elt in min_invest_fracs:
+                txt_file.write(str(float(elt) / 100) + " ")
+            txt_file.write('\n')
+            for elt in max_invest_fracs:
+                txt_file.write(str(float(elt) / 100) + " ")
