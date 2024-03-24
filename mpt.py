@@ -25,6 +25,9 @@ class MPT:
     def get_instrument_options_cols(self):
         return list(self.df.select_dtypes(exclude=['number']).columns)
     
+    def get_assets(self, asset_name):
+        return self.df[asset_name].unique()
+    
     def get_regs(self, asset_name, time_variable):
         def lin_func(x, a, b):     
             return a * x + b
@@ -36,7 +39,7 @@ class MPT:
                 return 1 - (ss_res / ss_tot)
             return 1
 
-        assets = self.df[asset_name].unique()
+        assets = self.get_assets(asset_name)
 
         num_cols = self.get_cols()
 
@@ -77,18 +80,19 @@ class MPT:
             res[col_name] = asset_res
         return res
     
-    def generate_graphs(self, custom_matrix_filename, tech_projects_filename, asset_name, regs, variables, custom_function, corr_projects_filename=None):
+    def set_custom_matrix(self, df):
+        self.custom_matrix = {row.iloc[0]: (0, row.iloc[1], row.iloc[2]) for _, row in df.iterrows()}
+    
+    def generate_graphs(self, asset_name, regs, variables, custom_function, corr_projects_filename=None):
 
         def reg_func(name, a, x, b):
             if name == 'exp':
                 return math.e ** (a * x + b)
             if name == 'poly':
                 return a * x ** b
-        custom_matrix_df = pd.read_excel("./data" + "/" + custom_matrix_filename)
-        custom_matrix = {row.iloc[0]: (row.iloc[1], row.iloc[2], row.iloc[3]) for _, row in custom_matrix_df.iterrows()}
+        # custom_matrix_df = pd.read_excel("./data" + "/" + custom_matrix_filename)
+        # custom_matrix = {row.iloc[0]: (row.iloc[1], row.iloc[2], row.iloc[3]) for _, row in custom_matrix_df.iterrows()}
         matrix_names = ['optimistic', 'likely', 'pessimistic']
-        tech_projs_df = pd.read_excel("./data" + "/" + tech_projects_filename)
-        tech_projs_df.columns = ['Name'] + list(tech_projs_df.columns[1:])
 
         # Get the current year
         # currentYear = datetime.now().year
@@ -98,50 +102,49 @@ class MPT:
         ## Create column for optimistic, likely, pessimistic
 
         for i in range(3):
-            tech_projs_df['Year_' + matrix_names[i]] = tech_projs_df.apply(lambda row: math.ceil(row['Year'] + (row['Year'] - currentYear) * custom_matrix[row[asset_name]][i]), axis=1)
-            tech_projs_df['deltaT_' + matrix_names[i]] = tech_projs_df['Year_' + matrix_names[i]] - 1960
+            self.tech_projects_df['Year_' + matrix_names[i]] = self.tech_projects_df.apply(lambda row: math.ceil(row['Year'] + (row['Year'] - currentYear) * self.custom_matrix[row[asset_name]][i]), axis=1)
+            self.tech_projects_df['deltaT_' + matrix_names[i]] = self.tech_projects_df['Year_' + matrix_names[i]] - 1960
             for var in variables:
-                if var in tech_projs_df.columns and var in regs:
+                if var in self.tech_projects_df.columns and var in regs:
                     params = regs[var]
-                    tech_projs_df['Projected_' + var + '_' + matrix_names[i] + 'Year'] = tech_projs_df.apply(lambda row: reg_func(params[row[asset_name]][0], params[row[asset_name]][1], row['deltaT_' + matrix_names[i]], params[row[asset_name]][2]), axis=1)
+                    self.tech_projects_df['Projected_' + var + '_' + matrix_names[i] + 'Year'] = self.tech_projects_df.apply(lambda row: reg_func(params[row[asset_name]][0], params[row[asset_name]][1], row['deltaT_' + matrix_names[i]], params[row[asset_name]][2]), axis=1)
         ## Calculate values from custom function
-        tech_projs_df['value1'] = tech_projs_df.apply(lambda row: custom_function(*(row[var] if var in tech_projs_df.columns else None for var in variables)), axis=1)
-        tech_projs_df['value1_norm'] = tech_projs_df['value1'] / tech_projs_df.apply(lambda row: custom_function(*(row['Projected_' + var  + '_optimisticYear'] if 'Projected_' + var + '_optimisticYear' in tech_projs_df.columns else None for var in variables)), axis=1)
-        tech_projs_df['value1_norm_likely'] = tech_projs_df['value1'] / tech_projs_df.apply(lambda row: custom_function(*(row['Projected_' + var + '_likelyYear'] if 'Projected_' + var + '_likelyYear' in tech_projs_df.columns else None for var in variables)), axis=1)
-        tech_projs_df['value1_norm_pessimistic'] = tech_projs_df['value1'] / tech_projs_df.apply(lambda row: custom_function(*(row['Projected_' + var + '_pessimisticYear'] if 'Projected_' + var + '_pessimisticYear' in tech_projs_df.columns else None for var in variables)), axis=1)
+        self.tech_projects_df['value1'] = self.tech_projects_df.apply(lambda row: custom_function(*(row[var] if var in self.tech_projects_df.columns else None for var in variables)), axis=1)
+        self.tech_projects_df['value1_norm'] = self.tech_projects_df['value1'] / self.tech_projects_df.apply(lambda row: custom_function(*(row['Projected_' + var  + '_optimisticYear'] if 'Projected_' + var + '_optimisticYear' in self.tech_projects_df.columns else None for var in variables)), axis=1)
+        self.tech_projects_df['value1_norm_likely'] = self.tech_projects_df['value1'] / self.tech_projects_df.apply(lambda row: custom_function(*(row['Projected_' + var + '_likelyYear'] if 'Projected_' + var + '_likelyYear' in self.tech_projects_df.columns else None for var in variables)), axis=1)
+        self.tech_projects_df['value1_norm_pessimistic'] = self.tech_projects_df['value1'] / self.tech_projects_df.apply(lambda row: custom_function(*(row['Projected_' + var + '_pessimisticYear'] if 'Projected_' + var + '_pessimisticYear' in self.tech_projects_df.columns else None for var in variables)), axis=1)
 
-        tech_projs_df['value1_norm_mean'] = (tech_projs_df['value1_norm'] + tech_projs_df['value1_norm_likely'] + tech_projs_df['value1_norm_pessimistic']) / 3
-        tech_projs_df['value1_norm_var'] = (tech_projs_df['value1_norm'] ** 2 +  tech_projs_df['value1_norm_likely'] ** 2 + tech_projs_df['value1_norm_pessimistic'] ** 2 - tech_projs_df['value1_norm'] * tech_projs_df['value1_norm_likely'] - tech_projs_df['value1_norm'] * tech_projs_df['value1_norm_pessimistic'] - tech_projs_df['value1_norm_likely'] * tech_projs_df['value1_norm_pessimistic']) / 18
+        self.tech_projects_df['value1_norm_mean'] = (self.tech_projects_df['value1_norm'] + self.tech_projects_df['value1_norm_likely'] + self.tech_projects_df['value1_norm_pessimistic']) / 3
+        self.tech_projects_df['value1_norm_var'] = (self.tech_projects_df['value1_norm'] ** 2 +  self.tech_projects_df['value1_norm_likely'] ** 2 + self.tech_projects_df['value1_norm_pessimistic'] ** 2 - self.tech_projects_df['value1_norm'] * self.tech_projects_df['value1_norm_likely'] - self.tech_projects_df['value1_norm'] * self.tech_projects_df['value1_norm_pessimistic'] - self.tech_projects_df['value1_norm_likely'] * self.tech_projects_df['value1_norm_pessimistic']) / 18
 
         # Output new csv file with calculated values
-        tech_projs_df.to_csv('./data/tech_projects_out.csv', index=False)
+        self.tech_projects_df.to_csv('./data/tech_projects_out.csv', index=False)
 
         # TODO - Get the correlation matrices and covariance matrices
         ## Correlation coeffs
         corr_matrix = {}
-        if not corr_projects_filename:
-            corr_coeffs = {}
-            for asset_type_1, asset_type_2 in combinations(tech_projs_df[asset_name].unique(), 2):
-                corr_coeffs[(asset_type_1, asset_type_2)] = np.array([[random.random(), random.random()], [random.random(), random.random()]])
-            ## Correlation Matrix
-            corr_matrix = {key: corr_coeffs[key][0][1] for key in corr_coeffs}
-            for asset_type in tech_projs_df[asset_name].unique():
-                corr_matrix[(asset_type, asset_type)] = 1
-        else:
-            corr_df = pd.read_excel("./data" + "/" + corr_projects_filename)
-            assets = [arr[0] for arr in corr_df.values]
-            for asset_type_1, asset_type_2 in combinations(tech_projs_df[asset_name].unique(), 2):
-                index1 = assets.index(asset_type_1)
-                index2 = assets.index(asset_type_2) + 1
-                corr_matrix[(asset_type_1, asset_type_2)] = corr_df.values[index1][index2]
-            for asset_type in tech_projs_df[asset_name].unique():
-                corr_matrix[(asset_type, asset_type)] = 1
+        # if not corr_projects_filename:
+        #     corr_coeffs = {}
+        #     for asset_type_1, asset_type_2 in combinations(self.tech_projects_df[asset_name].unique(), 2):
+        #         corr_coeffs[(asset_type_1, asset_type_2)] = np.array([[random.random(), random.random()], [random.random(), random.random()]])
+        #     ## Correlation Matrix
+        #     corr_matrix = {key: corr_coeffs[key][0][1] for key in corr_coeffs}
+        #     for asset_type in self.tech_projects_df[asset_name].unique():
+        #         corr_matrix[(asset_type, asset_type)] = 1
+        # else: 
+        assets = [arr[0] for arr in self.corr_df.values]
+        for asset_type_1, asset_type_2 in combinations(self.tech_projects_df[asset_name].unique(), 2):
+            index1 = assets.index(asset_type_1)
+            index2 = assets.index(asset_type_2) + 1
+            corr_matrix[(asset_type_1, asset_type_2)] = self.corr_df.values[index1][index2]
+        for asset_type in self.tech_projects_df[asset_name].unique():
+            corr_matrix[(asset_type, asset_type)] = 1
 
         ## Covariance matrix
         cov_matrix = []
-        for i, row1 in tech_projs_df.iterrows():
+        for i, row1 in self.tech_projects_df.iterrows():
             temp = []
-            for j, row2 in tech_projs_df.iterrows():
+            for j, row2 in self.tech_projects_df.iterrows():
                 asset_type_1, asset_type_2 = row1[asset_name], row2[asset_name]
                 if (asset_type_1, asset_type_2) in corr_matrix:
                     temp.append(corr_matrix[(asset_type_1, asset_type_2)] * math.sqrt(row1['value1_norm_var'] * row2['value1_norm_var'] ))
@@ -157,19 +160,23 @@ class MPT:
         eng.myScript(nargout=0)
     
     def get_tech_projects(self, tech_projects_filename):
-        tech_projs_df = pd.read_excel("./data" + "/" + tech_projects_filename)
-        tech_projs_df.columns = ['Name'] + list(tech_projs_df.columns[1:])
+        self.tech_projects_df = pd.read_excel("./data" + "/" + tech_projects_filename)
+        self.tech_projects_df.columns = ['Name'] + list(self.tech_projects_df.columns[1:])
 
-        return list(tech_projs_df['Name'])
+        return list(self.tech_projects_df['Name'])
+    
+    def set_tech_projects(self, df):
+        self.tech_projects_df = df
         
-    def update_invest_fracs(self, min_invest_fracs_str, max_invest_fracs_str, bound):
-        min_invest_fracs = min_invest_fracs_str.split(' | ')
-        max_invest_fracs = max_invest_fracs_str.split(' | ')
+    def update_invest_fracs(self, min_invest_fracs, max_invest_fracs, bound):
         if len(min_invest_fracs) != bound or len(max_invest_fracs) != bound:
             raise Exception('Number of projects does not match number of percentages')
         with open("./data/bounds.txt", "w") as txt_file:
             for elt in min_invest_fracs:
-                txt_file.write(str(float(elt) / 100) + " ")
+                txt_file.write(str(float(elt)) + " ")
             txt_file.write('\n')
             for elt in max_invest_fracs:
-                txt_file.write(str(float(elt) / 100) + " ")
+                txt_file.write(str(float(elt)) + " ")
+
+    def set_correlation_matrix(self, df):
+        self.corr_df = df

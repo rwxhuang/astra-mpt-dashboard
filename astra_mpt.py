@@ -133,22 +133,52 @@ with st.sidebar:
 
     st.text("Technology Projects Information:")
     step3 = st.container(border=True)
-    tech_projects = step3.file_uploader('Upload Technology Projects')
-    tech_projects_file = tech_projects.name if tech_projects else "Technology_Projects.xlsx"
-    tech_proj_names = m.get_tech_projects(tech_projects_file)
-
-    custom_matrix = step3.file_uploader('Upload Custom Matrix Completion Factors')
-    custom_matrix_file = custom_matrix.name if custom_matrix else "Custom_Matrix_ASTRA.xlsx"
+    tech_proj_file = step3.file_uploader('Upload Technology Projects to Invest in:')
+    tech_projects_df =  pd.read_excel(tech_proj_file) if tech_proj_file else pd.read_excel("./data" + "/" + "Technology_Projects.xlsx")
+    tech_projects_df.columns = ['Name'] + list(tech_projects_df.columns[1:])
+    step3.write("Tech projects: ")
+    edited_tech_projects_df = step3.data_editor(tech_projects_df, num_rows="dynamic")
+    m.set_tech_projects(edited_tech_projects_df.copy())
+    tech_proj_names = list(edited_tech_projects_df['Name'])
 
     with st.expander('Optional custom modifications', expanded=False):
-        min_max = st.container(border=True)
-        min_max.write('Technology Projects Order')
-        min_max.code(' | '.join(tech_proj_names))
-        min_invest_fracs = min_max.text_input("Select minimum investment percentages in same project order:", value=' | '.join(len(tech_proj_names) * [str("0")]))
-        max_invest_fracs = min_max.text_input("Select maximum investment percentages in same project order", value=' | '.join(len(tech_proj_names) * ["100"]))
-        m.update_invest_fracs(min_invest_fracs, max_invest_fracs, len(tech_proj_names))
+        # Setting minimum and maximum investment percentages
+        min_max_df = pd.DataFrame(
+            [{"project": tech_project, "min_invest_fraction": 0.0, "max_invest_fraction": 1.0} for tech_project in tech_proj_names]
+        )
+        st.write("Modify bounds for investment percentages [0.0-1.0]:")
+        edited_min_max_df = st.data_editor(min_max_df, num_rows="fixed", column_config={
+            "min_invest_fraction": st.column_config.NumberColumn(
+                min_value=0.0,
+                max_value=1.0
+            ),
+            "max_invest_fraction": st.column_config.NumberColumn(
+                min_value=0.0,
+                max_value=1.0
+            )
+        })
+        m.update_invest_fracs(edited_min_max_df["min_invest_fraction"], edited_min_max_df["max_invest_fraction"], len(tech_proj_names))
+        # Setting matrix completion factors (likely, pessimistic)
+        completion_factors_df = pd.DataFrame(
+            [{"project_type": project_type, "likely_factor": 1.1, "pessimistic_factor": 1.2} for project_type in m.get_assets(selected_tech_proj_var)]
+        )
+        ## Hardcoding values to match the paper
+        row_index_1 = completion_factors_df.index[completion_factors_df['project_type'] == 'Radiometer']
+        completion_factors_df.loc[row_index_1] = ['Radiometer', 1.2, 1.4]
+        row_index_2 = completion_factors_df.index[completion_factors_df['project_type'] == 'Sounder']
+        completion_factors_df.loc[row_index_2] = ['Sounder', 1.3, 1.5]
+
+        st.write("Modify likely and pessimism factors for project types:")
+        edited_completion_factors_df = st.data_editor(completion_factors_df, num_rows="fixed")
+
+        m.set_custom_matrix(edited_completion_factors_df)
         st.file_uploader('Upload Custom Regression Constants')
-        corr_matrix_file = st.file_uploader('Upload Custom Correlation Matrix')
+        # Setting correlation matrix
+        corr_matrix_file = st.file_uploader('Upload Custom Correlation Matrix') 
+        corr_matrix_df =  pd.read_excel(corr_matrix_file) if corr_matrix_file else pd.read_excel("./data" + "/" + "Custom_Correlation_Matrix.xlsx")
+        st.write("Correlation coefficients: ")
+        edited_corr_matrix_df = st.data_editor(corr_matrix_df, num_rows="fixed")
+        m.set_correlation_matrix(edited_corr_matrix_df.copy())
 
 # try:
 bar = st.progress(10)
@@ -163,8 +193,7 @@ with st.spinner(text='Building custom function'):
     custom_function = build_custom_function(num_columns, custom_function_name)
 bar.progress(80)
 with st.spinner(text='Generating graphs'):
-    corr_matrix_file = corr_matrix_file.name if corr_matrix_file else "Custom_Correlation_Matrix.xlsx"
-    m.generate_graphs(custom_matrix_file, tech_projects_file, selected_tech_proj_var, regs, num_columns, custom_function, corr_projects_filename=corr_matrix_file)
+    m.generate_graphs(selected_tech_proj_var, regs, num_columns, custom_function)
     bar.progress(95)
     time.sleep(1)
     bar.empty()
@@ -173,7 +202,6 @@ with st.spinner(text='Generating graphs'):
 col = st.columns((0.65, 0.35), gap='large')
 with col[0]:
     st.title('Recommended Portfolios')
-    tech_proj_names = m.get_tech_projects(tech_projects_file)
     pwgt_matrix = txt_to_matrix('./out/pwgt1.txt')
     pwgt_df = create_pwgt_df(tech_proj_names, pwgt_matrix)
     pwgt_stacked_bar_fig = portfolio_plot(pwgt_df)
