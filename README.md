@@ -82,15 +82,14 @@ _Below is an example of how you can instruct your audience on installing and set
    git clone https://github.com//rwxhuang/astra-mpt-dashboard.git
    ```
 2. Change directory into application
-  ```sh
+    ```sh
    cd astra-mpt-dashboard
-     ```
-2. Install necessary packages
+      ```
+3. Install necessary packages
    ```sh
    pip install -r requirements.txt
      ```
-
-3. Run the following command
+4. Run the following command
     ```sh
     python3 -m streamlit run astra_mpt.py
     ```
