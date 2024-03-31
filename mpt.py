@@ -1,11 +1,8 @@
 import pandas as pd
 import numpy as np
 from scipy.optimize import curve_fit
-import matplotlib.pyplot as plt
-import matlab.engine
-import random
-from datetime import datetime
 from itertools import combinations
+from pypfopt import EfficientFrontier
 import math
 
 # # Change python version to 3.10
@@ -83,15 +80,14 @@ class MPT:
     def set_custom_matrix(self, df):
         self.custom_matrix = {row.iloc[0]: (0, row.iloc[1], row.iloc[2]) for _, row in df.iterrows()}
     
-    def generate_graphs(self, asset_name, regs, variables, custom_function, corr_projects_filename=None):
+    def generate_graphs(self, asset_name, regs, variables, custom_function, bounds, corr_projects_filename=None):
 
         def reg_func(name, a, x, b):
             if name == 'exp':
                 return math.e ** (a * x + b)
             if name == 'poly':
                 return a * x ** b
-        # custom_matrix_df = pd.read_excel("./data" + "/" + custom_matrix_filename)
-        # custom_matrix = {row.iloc[0]: (row.iloc[1], row.iloc[2], row.iloc[3]) for _, row in custom_matrix_df.iterrows()}
+        
         matrix_names = ['optimistic', 'likely', 'pessimistic']
 
         # Get the current year
@@ -152,12 +148,25 @@ class MPT:
                     temp.append(corr_matrix[(asset_type_2, asset_type_1)] * math.sqrt(row1['value1_norm_var'] * row2['value1_norm_var'] ))
             cov_matrix.append(temp)
 
-        with open("./data/cov_matrix.txt", "w") as txt_file:
-            for line in cov_matrix:
-                txt_file.write("".join(str(line)[1:-1]) + "\n")
-
-        eng = matlab.engine.start_matlab()
-        eng.myScript(nargout=0)
+        # Calculating efficient frontier
+        ef = EfficientFrontier(self.tech_projects_df['value1_norm_mean'], np.array(cov_matrix), weight_bounds=bounds)
+        _NUM_PORTS = 20
+        res_weights = []
+        res_risk_return = []
+        vars = list(self.tech_projects_df['value1_norm_var'])
+        if not ef._max_return_value:
+            a = ef.deepcopy()
+            max_return = a._max_return()
+        else:
+            max_return = ef._max_return_value
+        for mean in np.linspace(min(self.tech_projects_df['value1_norm_mean']), float(max_return), num=20):
+            weights = ef.efficient_return(mean)
+            weights_arr = [weights[i] for i in range(len(weights))]
+            std = sum([weights_arr[i] ** 2 * vars[i] for i in range(len(weights_arr))]) ** 0.5
+            res_risk_return.append([std, mean])
+            res_weights.append(np.array([weights_arr]).T)
+        res_weights = np.concatenate(res_weights, axis=1)
+        return res_weights, res_risk_return
     
     def get_tech_projects(self, tech_projects_filename):
         self.tech_projects_df = pd.read_excel("./data" + "/" + tech_projects_filename)
@@ -167,16 +176,6 @@ class MPT:
     
     def set_tech_projects(self, df):
         self.tech_projects_df = df
-        
-    def update_invest_fracs(self, min_invest_fracs, max_invest_fracs, bound):
-        if len(min_invest_fracs) != bound or len(max_invest_fracs) != bound:
-            raise Exception('Number of projects does not match number of percentages')
-        with open("./data/bounds.txt", "w") as txt_file:
-            for elt in min_invest_fracs:
-                txt_file.write(str(float(elt)) + " ")
-            txt_file.write('\n')
-            for elt in max_invest_fracs:
-                txt_file.write(str(float(elt)) + " ")
 
     def set_correlation_matrix(self, df):
         self.corr_df = df

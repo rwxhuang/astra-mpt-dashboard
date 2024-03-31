@@ -78,13 +78,12 @@ def create_portfolio_df(proj_names, matrix):
     df.insert(0, 'Projects (down)/ Portfolio # (right)', proj_names)
     return df.to_csv().encode('utf-8')
 
-def scatter_plot():
-    df = pd.DataFrame(columns=['Mean of Portfolio Returns', 'Standard Deviation of Portfolio Returns', 'text_label'])
+def scatter_plot(matrix):
+    df = pd.DataFrame(columns=['Mean Return of Portfolio Returns', 'Risk of Portfolio (std dev.)', 'text_label'])
     tech_projs_df = pd.read_csv('./data/tech_projects_out.csv')
-    matrix = txt_to_matrix('./out/risk_return.txt')
     for i in range(len(matrix)):
-        df = df._append({'Mean of Portfolio Returns': round(float(matrix[i][0]), 3), 'Standard Deviation of Portfolio Returns': round(float(matrix[i][1]), 3), 'text_label': 'Portfolio ' + str(i)}, ignore_index=True)
-    trace1 = go.Scatter(x=df['Mean of Portfolio Returns'], y=df['Standard Deviation of Portfolio Returns'], mode='lines+markers', name='Portfolio (#) Return Risk', text=df['text_label'])
+        df = df._append({'Risk of Portfolio (std dev.)': round(float(matrix[i][0]), 3), 'Mean Return of Portfolio Returns': round(float(matrix[i][1]), 3), 'text_label': 'Portfolio ' + str(i)}, ignore_index=True)
+    trace1 = go.Scatter(x=df['Risk of Portfolio (std dev.)'], y=df['Mean Return of Portfolio Returns'], mode='lines+markers', name='Portfolio (#) Return Risk', text=df['text_label'])
     trace2 = go.Scatter(x=list(round(np.sqrt(tech_projs_df['value1_norm_var']), 3)), y=list(round(tech_projs_df['value1_norm_mean'], 3)), mode='markers', name='Technology Project Return/Risk', text=tech_projs_df['Name'])
     fig = make_subplots()
     fig.add_trace(trace1)
@@ -93,8 +92,8 @@ def scatter_plot():
                       marker=dict(size=8,
                               line=dict(width=1, color='DarkSlateGrey')))
     fig.update_layout(
-        xaxis_title="Mean of Portfolio Returns",
-        yaxis_title="Standard Deviation of Portfolio Returns",
+        xaxis_title="Risk of Portfolio (std dev.)",
+        yaxis_title="Mean Return of Portfolios",
         legend_title=dict(
             font = dict(size = 16),
             )
@@ -157,7 +156,7 @@ with st.sidebar:
                 max_value=1.0
             )
         })
-        m.update_invest_fracs(edited_min_max_df["min_invest_fraction"], edited_min_max_df["max_invest_fraction"], len(tech_proj_names))
+        bounds = [(edited_min_max_df["min_invest_fraction"][i], edited_min_max_df["max_invest_fraction"][i]) for i in range(len(tech_proj_names))]
         # Setting matrix completion factors (likely, pessimistic)
         completion_factors_df = pd.DataFrame(
             [{"project_type": project_type, "likely_factor": 1.1, "pessimistic_factor": 1.2} for project_type in m.get_assets(selected_tech_proj_var)]
@@ -170,14 +169,14 @@ with st.sidebar:
 
         st.write("Modify likely and pessimism factors for project types:")
         edited_completion_factors_df = st.data_editor(completion_factors_df, num_rows="fixed")
-
         m.set_custom_matrix(edited_completion_factors_df)
-        st.file_uploader('Upload Custom Regression Constants')
+
         # Setting correlation matrix
-        corr_matrix_file = st.file_uploader('Upload Custom Correlation Matrix') 
+        corr_cont = st.container(border=True)
+        corr_matrix_file = corr_cont.file_uploader('Upload Custom Correlation Matrix') 
         corr_matrix_df =  pd.read_excel(corr_matrix_file) if corr_matrix_file else pd.read_excel("./data" + "/" + "Custom_Correlation_Matrix.xlsx")
-        st.write("Correlation coefficients: ")
-        edited_corr_matrix_df = st.data_editor(corr_matrix_df, num_rows="fixed")
+        corr_cont.write("Correlation coefficients: ")
+        edited_corr_matrix_df = corr_cont.data_editor(corr_matrix_df, num_rows="fixed")
         m.set_correlation_matrix(edited_corr_matrix_df.copy())
 
 # try:
@@ -193,7 +192,7 @@ with st.spinner(text='Building custom function'):
     custom_function = build_custom_function(num_columns, custom_function_name)
 bar.progress(80)
 with st.spinner(text='Generating graphs'):
-    m.generate_graphs(selected_tech_proj_var, regs, num_columns, custom_function)
+    pwgt, risk_ret = m.generate_graphs(selected_tech_proj_var, regs, num_columns, custom_function, bounds)
     bar.progress(95)
     time.sleep(1)
     bar.empty()
@@ -202,18 +201,18 @@ with st.spinner(text='Generating graphs'):
 col = st.columns((0.65, 0.35), gap='large')
 with col[0]:
     st.title('Recommended Portfolios')
-    pwgt_matrix = txt_to_matrix('./out/pwgt1.txt')
-    pwgt_df = create_pwgt_df(tech_proj_names, pwgt_matrix)
+    # pwgt_matrix = txt_to_matrix('./out/pwgt1.txt')
+    pwgt_df = create_pwgt_df(tech_proj_names, pwgt)
     pwgt_stacked_bar_fig = portfolio_plot(pwgt_df)
     st.markdown("#### Risk and Return for 20 Calculated Portfolios")
-    fig = scatter_plot()
+    fig = scatter_plot(risk_ret)
     st.plotly_chart(fig, theme="streamlit", use_container_width=True)
     st.markdown("#### Portfolio Weights for each Portfolio #")
     st.plotly_chart(pwgt_stacked_bar_fig, use_container_width=True)
 
     st.markdown("#### Download Portfolio Calculations")
     st.write("Download csv file for the calculated portfolio investments:")
-    st.download_button('Download CSV file of portfolios', data=create_portfolio_df(tech_proj_names, pwgt_matrix), file_name='portfolio_investments.csv', mime='text/csv',)
+    st.download_button('Download CSV file of portfolios', data=create_portfolio_df(tech_proj_names, pwgt), file_name='portfolio_investments.csv', mime='text/csv',)
 with col[1]:
     with st.expander('About this Application', expanded=False):
         st.write('''
