@@ -46,6 +46,8 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
+Link: https://rwxhuang-astra-mpt-dashboard-astra-mpt-3agih6.streamlit.app/
+
 Advanced Space Technology Roadmap Architecture (ASTRA) is a collaborative project between MIT and NASA to meet the following six objectives:
 
 1. <u>Map</u> the NASA technology portfolio to ongoing, planned and potential future missions using a systems approach compatible with NASA’s technology taxonomy (TX01-TX17)
@@ -62,8 +64,7 @@ This project focuses on bulletpoint 4 where we apply Markowitz Portfolio Theory 
 
 ### Built With
 
-* Python [streamlit, pandas]
-* Matlab [Portfolio]
+* Python [streamlit, pandas, PyPortfolioOpt[^1]]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -96,10 +97,10 @@ _Below is an example of how you can instruct your audience on installing and set
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- USAGE EXAMPLES -->
-## Usage
+<!-- DOCUMENTATION -->
+## Documentation
+ - In process
 
-Examples will be shown here.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -117,4 +118,9 @@ Roderick Huang - rwxhuang@mit.edu
 
 Project Link: [https://github.com/rwxhuang/astra-mpt-dashboard/](https://github.com/rwxhuang/astra-mpt-dashboard/)
 
+Website Link: [https://rwxhuang-astra-mpt-dashboard-astra-mpt-3agih6.streamlit.app/](https://rwxhuang-astra-mpt-dashboard-astra-mpt-3agih6.streamlit.app/)
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- SOURCES -->
+[^1]: Martin, R. A., (2021). PyPortfolioOpt: portfolio optimization in Python. Journal of Open Source Software, 6(61), 3066, https://doi.org/10.21105/joss.03066
