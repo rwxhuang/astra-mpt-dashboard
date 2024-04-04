@@ -149,17 +149,26 @@ class MPT:
             cov_matrix.append(temp)
 
         # Calculating efficient frontier
-        ef = EfficientFrontier(self.tech_projects_df['value1_norm_mean'], np.array(cov_matrix), weight_bounds=bounds)
-        _NUM_PORTS = 20
+        def reset_ef():
+            return EfficientFrontier(self.tech_projects_df['value1_norm_mean'], np.array(cov_matrix), weight_bounds=bounds)
+        ef = reset_ef()
+        _NUM_PORTS = 10
         res_weights = []
         res_risk_return = []
         vars = list(self.tech_projects_df['value1_norm_var'])
+        ## Find max return value
         if not ef._max_return_value:
             a = ef.deepcopy()
             max_return = a._max_return()
         else:
             max_return = ef._max_return_value
-        for mean in np.linspace(min(self.tech_projects_df['value1_norm_mean']), float(max_return), num=20):
+        ## Find min return value
+        ef = reset_ef()
+        min_weights = ef.min_volatility()
+        min_return = sum([min_weights[i] * self.tech_projects_df['value1_norm_mean'][i] for i in range(len(min_weights))])
+        print(min_return)
+        for mean in np.linspace(float(min_return), float(max_return), num=_NUM_PORTS):
+            ef = reset_ef()
             weights = ef.efficient_return(mean)
             weights_arr = [weights[i] for i in range(len(weights))]
             std = sum([weights_arr[i] ** 2 * vars[i] for i in range(len(weights_arr))]) ** 0.5

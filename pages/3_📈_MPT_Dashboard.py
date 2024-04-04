@@ -9,12 +9,6 @@ from plotly.subplots import make_subplots
 import pandas as pd
 import numpy as np
 
-st.set_page_config(
-    page_title="ASTRA MPT Dashboard",
-    page_icon="🚀",
-    layout="wide",
-    initial_sidebar_state="expanded")
-
 def txt_to_matrix(file_path):
     matrix = []
     with open(file_path, 'r') as file:
@@ -39,10 +33,10 @@ def portfolio_plot(df):
         )
     )
     return fig
-def get_all_pie_charts(df, later_portfolios):
+def get_all_pie_charts(df):
     _NUM_ROWS = 10
     _NUM_COLS = 2
-    _RNG = range(20) if later_portfolios else range(10)
+    _RNG = range(10)
 
     def pie_chart(chart_num):
         pie = go.Pie(values=df.query('`Portfolio Number` == ' + str(chart_num))['Proportion'], labels=df.query('`Portfolio Number` == ' + str(chart_num))['Project Name'])
@@ -83,7 +77,7 @@ def scatter_plot(matrix):
     tech_projs_df = pd.read_csv('./data/tech_projects_out.csv')
     for i in range(len(matrix)):
         df = df._append({'Risk of Portfolio (std dev.)': round(float(matrix[i][0]), 3), 'Mean Return of Portfolio Returns': round(float(matrix[i][1]), 3), 'text_label': 'Portfolio ' + str(i)}, ignore_index=True)
-    trace1 = go.Scatter(x=df['Risk of Portfolio (std dev.)'], y=df['Mean Return of Portfolio Returns'], mode='lines+markers', name='Portfolio (#) Return Risk', text=df['text_label'])
+    trace1 = go.Scatter(x=df['Risk of Portfolio (std dev.)'], y=df['Mean Return of Portfolio Returns'], mode='markers', name='Portfolio (#) Return Risk', text=df['text_label'])
     trace2 = go.Scatter(x=list(round(np.sqrt(tech_projs_df['value1_norm_var']), 3)), y=list(round(tech_projs_df['value1_norm_mean'], 3)), mode='markers', name='Technology Project Return/Risk', text=tech_projs_df['Name'])
     fig = make_subplots()
     fig.add_trace(trace1)
@@ -143,20 +137,20 @@ with st.sidebar:
     with st.expander('Optional custom modifications', expanded=False):
         # Setting minimum and maximum investment percentages
         min_max_df = pd.DataFrame(
-            [{"project": tech_project, "min_invest_fraction": 0.0, "max_invest_fraction": 1.0} for tech_project in tech_proj_names]
+            [{"project": tech_project, "min_frac": 0.0, "max_frac": 1.0} for tech_project in tech_proj_names]
         )
         st.write("Modify bounds for investment percentages [0.0-1.0]:")
         edited_min_max_df = st.data_editor(min_max_df, num_rows="fixed", column_config={
-            "min_invest_fraction": st.column_config.NumberColumn(
+            "min_frac": st.column_config.NumberColumn(
                 min_value=0.0,
                 max_value=1.0
             ),
-            "max_invest_fraction": st.column_config.NumberColumn(
+            "max_frac": st.column_config.NumberColumn(
                 min_value=0.0,
                 max_value=1.0
             )
-        })
-        bounds = [(edited_min_max_df["min_invest_fraction"][i], edited_min_max_df["max_invest_fraction"][i]) for i in range(len(tech_proj_names))]
+        }, use_container_width=True)
+        bounds = [(edited_min_max_df["min_frac"][i], edited_min_max_df["max_frac"][i]) for i in range(len(tech_proj_names))]
         # Setting matrix completion factors (likely, pessimistic)
         completion_factors_df = pd.DataFrame(
             [{"project_type": project_type, "likely_factor": 1.1, "pessimistic_factor": 1.2} for project_type in m.get_assets(selected_tech_proj_var)]
@@ -167,7 +161,7 @@ with st.sidebar:
         row_index_2 = completion_factors_df.index[completion_factors_df['project_type'] == 'Sounder']
         completion_factors_df.loc[row_index_2] = ['Sounder', 1.3, 1.5]
 
-        st.write("Modify likely and pessimism factors for project types:")
+        st.write("Modify likely and pessimism time factors for project completion times:")
         edited_completion_factors_df = st.data_editor(completion_factors_df, num_rows="fixed")
         m.set_custom_matrix(edited_completion_factors_df)
 
@@ -176,7 +170,7 @@ with st.sidebar:
         corr_matrix_file = corr_cont.file_uploader('Upload Custom Correlation Matrix') 
         corr_matrix_df =  pd.read_excel(corr_matrix_file) if corr_matrix_file else pd.read_excel("./data" + "/" + "Custom_Correlation_Matrix.xlsx")
         corr_cont.write("Correlation coefficients: ")
-        edited_corr_matrix_df = corr_cont.data_editor(corr_matrix_df, num_rows="fixed")
+        edited_corr_matrix_df = corr_cont.data_editor(corr_matrix_df, num_rows="fixed",use_container_width=True)
         m.set_correlation_matrix(edited_corr_matrix_df.copy())
 
 # try:
@@ -221,6 +215,6 @@ with col[1]:
             - :orange[**Contributors to Project**]: Roderick Huang, Afreen Siddiqi, Julian Milton, Olivier de Weck
             ''')
     st.markdown("#### Pie Charts for Calculated Portfolios")
-    on = st.toggle("Toggle to view all 20 portfolio pie charts")
-    pie_charts = get_all_pie_charts(pwgt_df, later_portfolios=on)
+    # on = st.toggle("Toggle to view all 20 portfolio pie charts")
+    pie_charts = get_all_pie_charts(pwgt_df)
     st.plotly_chart(pie_charts, use_container_width=True, use_container_height=True)
