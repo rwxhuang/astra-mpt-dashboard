@@ -1,5 +1,4 @@
 import streamlit as st
-import mpt
 import pandas as pd
 import numpy as np
 import time
@@ -8,6 +7,8 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import pandas as pd
 import numpy as np
+
+from mpt import MPT
 
 def txt_to_matrix(file_path):
     matrix = []
@@ -114,12 +115,12 @@ with st.sidebar:
     step1 = st.container(border=True)
     dataset = step1.file_uploader('Select Dataset')
 
-    m = mpt.MPT(dataset.name if dataset else "InstrumentData_Clean_Julia_Milton.xlsx")
+    m = MPT(dataset.name if dataset else "InstrumentData_Clean_Julia_Milton.xlsx")
     word_columns = m.get_instrument_options_cols()
     num_columns = m.get_cols()
 
-    selected_tech_proj_var = step1.selectbox('Select a technology project variable from the dataset.', word_columns, index=7)
-    selected_time_variable = step1.selectbox('Select a time numerical variable from the dataset.', num_columns, index=1)
+    selected_tech_proj_var = step1.selectbox('Select a technology project variable from the dataset.', word_columns, index=7 if len(word_columns) > 7 else 0)
+    selected_time_variable = step1.selectbox('Select a time numerical variable from the dataset.', num_columns, index=1 if len(word_columns) > 1 else 0)
     step1.write("Available numerical variables:")
     step1.code('\n'.join(num_columns))
     custom_function_name = step1.text_input('Custom Formula using numerical variables above', value='(1 / Resolution_m) / Mass_kg')
@@ -204,8 +205,7 @@ with col[0]:
     st.markdown("#### Portfolio Weights for each Portfolio #")
     st.plotly_chart(pwgt_stacked_bar_fig, use_container_width=True)
 
-    st.markdown("#### Download Portfolio Calculations")
-    st.write("Download csv file for the calculated portfolio investments:")
+    st.markdown("#### Download Portfolio Calculations:")
     st.download_button('Download CSV file of portfolios', data=create_portfolio_df(tech_proj_names, pwgt), file_name='portfolio_investments.csv', mime='text/csv',)
 with col[1]:
     with st.expander('About this Application', expanded=False):

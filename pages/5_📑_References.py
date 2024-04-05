@@ -11,4 +11,8 @@ st.markdown(
         Afreen Siddiqi, Julia Milton, Olivier de Weck   *IGARSS 2023*
     - [Paper] [Earth Observation Technologies for Climate Change Adaptation and Monitoring: Future Projection from Decadal Trends](https://drive.google.com/file/d/146rDReSWqNHAe6hUhiKoz9Rb2w4GAIP1/view);
         Afreen Siddiqi, Julia Milton, Maria Cabrera, Olivier de Weck    *GLOC 2023*
+    #### Listed below are resources used to build this application.
+    - Martin, R. A., (2021). PyPortfolioOpt: portfolio optimization in Python. Journal of Open Source Software, 6(61), 3066, https://doi.org/10.21105/joss.03066
+    - https://selenium-python.readthedocs.io/
+    - https://github.com/pskrunner14/info-retrieval
 """)
