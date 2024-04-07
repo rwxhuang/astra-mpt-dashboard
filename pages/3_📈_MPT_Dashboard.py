@@ -212,7 +212,6 @@ with col[1]:
         st.write('''
             - Paper: [Application of Markowitz Portfolio Theory for Space Technologies](https://drive.google.com/file/d/1o7cFdl9_NCfGeJULHbUtofH8E9j1vR3K/view?usp=sharing).
             - :orange[**Markowitz Portfolio Theory**]: Building a portfolio of investments while maximizing expected return 
-            - :orange[**Contributors to Project**]: Roderick Huang, Afreen Siddiqi, Julian Milton, Olivier de Weck
             ''')
     st.markdown("#### Pie Charts for Calculated Portfolios")
     # on = st.toggle("Toggle to view all 20 portfolio pie charts")

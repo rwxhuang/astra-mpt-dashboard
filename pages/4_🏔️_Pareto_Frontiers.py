@@ -7,7 +7,6 @@ from pareto_frontiers import ParetoFrontiers
 
 COLORS = ['#361c64', '#17804f', '#a8ba7a', '#0407f2', '#2a685b', '#1e8cbe', '#977ecb', '#f0f87a', '#d2f29c', '#b39ffe', '#b3bb70', '#30f1c0', '#fa1921', '#9d62d8', '#4f4b4d', '#6ec697', '#de4520', '#b58819', '#1d57fc', '#f8df0a', '#f03d50', '#1e531d', '#c3d413', '#5f4cd0', '#de678e', '#13467a', '#612181', '#934673', '#a16c29', '#f2aaa1']
 
-st.warning('Implementation still in progress!', icon="🚨")
 st.header("Pareto Frontiers")
 st.write("#### We calculate efficient frontiers in the 2-dimensional case from NASA technology projects.")
 
@@ -53,7 +52,7 @@ with st.sidebar:
     column_names = pf.get_cols()
     instruments = pf.get_instruments()
     x_axis = step2.selectbox('Select the x-axis.', column_names, index=9 if len(column_names) > 9 else 0)
-    x_max = step2.toggle('Maximize x', False)
+    x_max = False
     log_x = step2.toggle('Take logarithm of x-axis', True)
     y_axis = step2.selectbox('Select the y-axis.', column_names, index=16 if len(column_names) > 16 else 0)
     y_max = step2.toggle('Maximize y-axis', False)
@@ -78,3 +77,9 @@ with st.sidebar:
                 )
 fig = generate_scatter(scatter_dataset, frontier_dataset, x_axis, y_axis, log_x, log_y)
 st.plotly_chart(fig, theme="streamlit", use_container_width=True)
+
+with st.expander('About this Application', expanded=False):
+    st.write('''
+        - Paper: [Earth Observation Technologies for Climate Change Adaptation and Monitoring: Future Projection from Decadal Trends](https://drive.google.com/file/d/1wrI86MDXatQ-N5V_CIMb3dpss4kq0MxX/view?usp=drive_link).
+        - :orange[**Pareto Frontiers**]: Calculating the most efficient solutions in multi-objective optimization
+        ''')

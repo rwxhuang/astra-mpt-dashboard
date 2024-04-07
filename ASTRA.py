@@ -14,7 +14,7 @@ st.markdown(
     #### Studying the technological developments of innovative NASA projects through quantitative methods.
 """
 )
-tab1, tab2, tab3 = st.tabs(["Downloading Data", "Generate Graphs", "Markowitz Portfolio Theory (MPT)"])
+tab1, tab2, tab3, tab4 = st.tabs(["🕵️‍♀️ Downloading Data", "📊 Generate Graphs", "📈 Markowitz Portfolio Theory (MPT)", "🏔️ Pareto Frontiers"])
 
 with tab1:
    st.markdown(
@@ -34,5 +34,12 @@ with tab3:
    st.markdown(
     """
     Automating the process of making investment decisions for technology projects.
+    """
+    )
+   
+with tab4:
+   st.markdown(
+    """
+    Calculating efficient frontiers in the 2-dimensional case from technology projects
     """
     )

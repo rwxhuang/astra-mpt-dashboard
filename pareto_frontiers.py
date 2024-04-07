@@ -6,7 +6,6 @@ import math
 class ParetoFrontiers:
     def __init__(self, file_name):
         read_file = pd.read_excel("./data" + "/" + file_name)
-        read_file.to_csv(file_name[:-4] + "csv", index=None, header=True)
         self.df = pd.DataFrame(read_file)
 
     def get_cols(self):
