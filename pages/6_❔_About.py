@@ -17,21 +17,21 @@ st.markdown(
 col1, col2, col3, col4, col5 = st.columns(5)
 
 with col1:
-   st.image("./images/NASA_logo.png")
-   st.markdown("""#### Olivier L. de Weck \n *Professor*:""")
+   st.image("./images/oli.jpg")
+   st.markdown("""#### Olivier L. de Weck \n *Professor*: Apollo Program Professor of Astronautics, Professor of Engineering Systems, ESL Faculty Director""")
 
 with col2:
-   st.image("./images/NASA_logo.png")
-   st.write("#### Afreen Siddiqi \n *Research Scientist*:")
+   st.image("./images/afreen.jpg")
+   st.write("#### Afreen Siddiqi \n *Research Scientist*: Strategic Engineering Research Group" )
 
 with col3:
-   st.image("./images/NASA_logo.png")
-   st.write("#### Julia Milton \n *PhD Candidate*:")
+   st.image("./images/julia.jpg")
+   st.write("#### Julia Milton \n *PhD 2023, Aeronautics and Astronautics*: SEAri")
 
 with col4:
-   st.image("./images/NASA_logo.png")
-   st.write("#### Alex Koenig \n *SM Student*:")
+   st.image("./images/alex.jpg")
+   st.write("#### Alex Koenig \n *SM 2023, Aerospace*: Strategic Engineering Research Group")
 
 with col5:
-   st.image("./images/IMG_9131.jpg")
+   st.image("./images/roderick.jpg")
    st.write("#### Roderick Huang \n *MEng Student*: Double majored in Mathematics (18) and Computer Science (6-3)")
