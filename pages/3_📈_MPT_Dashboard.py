@@ -10,6 +10,8 @@ import numpy as np
 
 from mpt import MPT
 
+st.set_page_config(layout="wide")
+
 def txt_to_matrix(file_path):
     matrix = []
     with open(file_path, 'r') as file:

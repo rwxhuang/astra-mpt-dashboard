@@ -6,6 +6,7 @@ from plotly.subplots import make_subplots
 from pareto_frontiers import ParetoFrontiers
 
 COLORS = ['#361c64', '#17804f', '#a8ba7a', '#0407f2', '#2a685b', '#1e8cbe', '#977ecb', '#f0f87a', '#d2f29c', '#b39ffe', '#b3bb70', '#30f1c0', '#fa1921', '#9d62d8', '#4f4b4d', '#6ec697', '#de4520', '#b58819', '#1d57fc', '#f8df0a', '#f03d50', '#1e531d', '#c3d413', '#5f4cd0', '#de678e', '#13467a', '#612181', '#934673', '#a16c29', '#f2aaa1']
+st.set_page_config(layout="centered")
 
 st.header("Pareto Frontiers")
 st.write("#### We calculate efficient frontiers in the 2-dimensional case from NASA technology projects.")
