@@ -1,9 +1,11 @@
 from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
-from difflib import SequenceMatcher
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from webdriver_manager.firefox import GeckoDriverManager
 import pandas as pd
 import csv
 import boolean_search
@@ -31,8 +33,6 @@ class Search():
         #Go to the homepage
         self.driver.get("https://techport.nasa.gov/home")
 
-        #self.driver.implicitly_wait(0.5)
-
         #Enter into the search bar the 'self.search_phrase'
         text_box = self.driver.find_element(by=By.NAME, value="searchVO.searchCriteria.searchOptions[0].input")
         submit_button = self.driver.find_element(by=By.CLASS_NAME, value="button-search")
@@ -59,9 +59,13 @@ class Search():
         return article_ids
 
     def scrape_data(self):
-        chrome_options = Options()
-        chrome_options.add_argument("headless")
-        self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install(), options=chrome_options ))
+        firefoxOptions = Options()
+        firefoxOptions.add_argument("--headless")
+        service = Service(GeckoDriverManager().install())
+        self.driver = webdriver.Firefox(
+            options=firefoxOptions,
+            service=service,
+        )
 
         parsed_infos = []
         article_ids = self.search_bar_tech_port()
@@ -71,7 +75,7 @@ class Search():
             if int(d['Techport ID']) in article_ids:
                 parsed_infos.append(dict(d))
         res = pd.DataFrame(parsed_infos)
-        return res.to_csv().encode('utf-8')
+        return res
 
         # self.get_sbir_scrape_data()
 
