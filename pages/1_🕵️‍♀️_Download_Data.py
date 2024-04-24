@@ -7,6 +7,7 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.os_manager import ChromeType
 
+chrome_version = "76.0.3809.68"
 def get_driver():
     return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)		
 

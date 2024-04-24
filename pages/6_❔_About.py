@@ -40,7 +40,7 @@ with col2:
 with col3:
    with st.container(height=375, border=True):
       st.image("./images/george.jpeg")
-      st.markdown("""#### G L. de Weck \n *Research Scientist*: Strategic Engineering Research Group""")
+      st.markdown("""#### George Lordos \n *Research Scientist*: Strategic Engineering Research Group""")
    with st.container(height=375, border=True):
       st.image("./images/nadiak.png")
       st.write("#### Nadia Khan \n *Graduate Researcher*: Technology Policy Program Masters Candidate" )
