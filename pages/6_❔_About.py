@@ -31,7 +31,7 @@ with col1:
 
 with col2:
    with st.container(height=375, border=True):
-      st.image("./images/afreen.jpg")
+      st.image("./images/afreen.jpeg")
       st.write("#### Afreen Siddiqi \n *Research Scientist*: Strategic Engineering Research Group" )
    with st.container(height=375, border=True):
       st.image("./images/alex.jpg")
