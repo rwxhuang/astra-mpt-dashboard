@@ -9,7 +9,7 @@ from webdriver_manager.core.os_manager import ChromeType
 
 chrome_version = "76.0.3809.68"
 def get_driver():
-    return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)		
+    return webdriver.Chrome(service=Service(ChromeDriverManager(chrome_version).install()), options=options)		
 
 options = Options()
 options.add_argument("--disable-gpu")
