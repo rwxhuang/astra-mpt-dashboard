@@ -14,24 +14,34 @@ st.markdown(
 """
 )
 
-col1, col2, col3, col4, col5 = st.columns(5)
+col1, col2, col3 = st.columns(3)
 
 with col1:
-   st.image("./images/oli.jpg")
-   st.markdown("""#### Olivier L. de Weck \n *Professor*: Apollo Program Professor of Astronautics, Professor of Engineering Systems, ESL Faculty Director""")
+   with st.container(height=375, border=True):
+      st.image("./images/oli.jpg")
+      st.markdown("""#### Olivier L. de Weck \n *Professor*: Apollo Program Professor of Astronautics, Professor of Engineering Systems, ESL Faculty Director""")
+   with st.container(height=375, border=True):
+      st.image("./images/julia.jpg")
+      st.write("#### Julia Milton \n *PhD 2023, Aeronautics and Astronautics*: SEAri")
+   with st.container(height=375, border=True):
+      st.image("./images/nadiak.png")
+      st.write("#### Nadia Khan \n *Graduate Researcher*: Technology Policy Program Masters Candidate" )
 
 with col2:
-   st.image("./images/afreen.jpg")
-   st.write("#### Afreen Siddiqi \n *Research Scientist*: Strategic Engineering Research Group" )
+   with st.container(height=375, border=True):
+      st.image("./images/afreen.jpg")
+      st.write("#### Afreen Siddiqi \n *Research Scientist*: Strategic Engineering Research Group" )
+   with st.container(height=375, border=True):
+      st.image("./images/alex.jpg")
+      st.write("#### Alex Koenig \n *SM 2023, Aerospace*: Strategic Engineering Research Group")
+   with st.container(height=375, border=True):
+      st.image("./images/roderick.jpg")
+      st.write("#### Roderick Huang \n *MEng Student*: Double majored in Mathematics (18) and Computer Science (6-3)")
 
 with col3:
-   st.image("./images/julia.jpg")
-   st.write("#### Julia Milton \n *PhD 2023, Aeronautics and Astronautics*: SEAri")
-
-with col4:
-   st.image("./images/alex.jpg")
-   st.write("#### Alex Koenig \n *SM 2023, Aerospace*: Strategic Engineering Research Group")
-
-with col5:
-   st.image("./images/roderick.jpg")
-   st.write("#### Roderick Huang \n *MEng Student*: Double majored in Mathematics (18) and Computer Science (6-3)")
+   with st.container(height=375, border=True):
+      st.image("./images/george.jpeg")
+      st.markdown("""#### G L. de Weck \n *Research Scientist*: Strategic Engineering Research Group""")
+   with st.container(height=375, border=True):
+      st.image("./images/alex.jpg")
+      st.write("#### Alex Koenig \n *SM 2023, Aerospace*: Strategic Engineering Research Group")
