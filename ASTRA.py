@@ -14,7 +14,7 @@ st.markdown(
     #### Studying the technological developments of innovative NASA projects through quantitative methods.
 """
 )
-tab1, tab2, tab3, tab4 = st.tabs(["🕵️‍♀️ Downloading Data", "📊 Generate Graphs", "📈 Markowitz Portfolio Theory (MPT)", "🏔️ Pareto Frontiers"])
+tab1, tab2, tab3, tab4 = st.tabs(["🕵️‍♀️ Downloading Data", "📊 Generate Graphs", "🏔️ Pareto Frontiers",  "📈 Markowitz Portfolio Theory (MPT)"])
 
 with tab1:
     st.markdown(
@@ -35,15 +35,16 @@ with tab2:
 with tab3:
    st.markdown(
     """
-    Automating the process of making investment decisions for technology projects.
-    """
-    )
-   st.image('./images/mpt.png', use_column_width="always", caption='Automatically generate portfolios using Markowitz Portfolio Theory.')
-   
-with tab4:
-   st.markdown(
-    """
     Calculating efficient frontiers in the 2-dimensional case from technology projects
     """
     )
    st.image('./images/pareto_frontiers.png', use_column_width="always", caption='Experiment finding efficient frontiers with a given dataset.')
+
+with tab4:
+   st.markdown(
+    """
+    Automating the process of making investment decisions for technology projects.
+    """
+    )
+   st.image('./images/mpt.png', use_column_width="always", caption='Automatically generate portfolios using Markowitz Portfolio Theory.')
+

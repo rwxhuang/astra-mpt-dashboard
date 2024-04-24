@@ -64,7 +64,8 @@ This project focuses on bulletpoint 4 where we apply Markowitz Portfolio Theory 
 
 ### Built With
 
-* Python [streamlit, pandas, PyPortfolioOpt[^1]]
+* Python [streamlit, pandas, PyPortfolioOpt]
+* Sources: [^1]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -99,7 +100,7 @@ _Below is an example of how you can instruct your audience on installing and set
 
 <!-- DOCUMENTATION -->
 ## Documentation
- - In process
+ - In progress
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -118,9 +119,9 @@ Roderick Huang - rwxhuang@mit.edu
 
 Project Link: [https://github.com/rwxhuang/astra-mpt-dashboard/](https://github.com/rwxhuang/astra-mpt-dashboard/)
 
-Website Link: [https://rwxhuang-astra-mpt-dashboard-astra-mpt-3agih6.streamlit.app/](https://rwxhuang-astra-mpt-dashboard-astra-mpt-3agih6.streamlit.app/)
+Website Link: [https://mit-astra.streamlit.app/](https://mit-astra.streamlit.app/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- SOURCES -->
-[^1]: Martin, R. A., (2021). PyPortfolioOpt: portfolio optimization in Python. Journal of Open Source Software, 6(61), 3066, https://doi.org/10.21105/joss.03066
+[^1]: [https://mit-astra.streamlit.app/References](https://mit-astra.streamlit.app/References)
