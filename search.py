@@ -12,13 +12,14 @@ import boolean_search
 
 class Search():
 
-    def __init__(self, search_phrase):
+    def __init__(self, search_phrase, driver):
         csv_filename = './data/techport_all.csv'
         with open(csv_filename, encoding="utf8") as f:
             reader = csv.reader(f)
             self.data = list(reader)
         self.reorganize_data()
         self.search_phrase = search_phrase 
+        self.driver = driver
 
     def reorganize_data(self):
         labels = self.data[0]
@@ -59,14 +60,6 @@ class Search():
         return article_ids
 
     def scrape_data(self):
-        firefoxOptions = Options()
-        firefoxOptions.add_argument("--headless")
-        service = Service(GeckoDriverManager().install())
-        self.driver = webdriver.Firefox(
-            options=firefoxOptions,
-            service=service,
-        )
-
         parsed_infos = []
         article_ids = self.search_bar_tech_port()
         self.driver.quit()
