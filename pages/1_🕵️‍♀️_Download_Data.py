@@ -1,6 +1,15 @@
 import streamlit as st
 from search import Search
 import time
+import os
+
+
+
+@st.cache_resource
+def installff():
+  os.system('sbase install geckodriver')
+  os.system('ln -s /home/appuser/venv/lib/python3.10/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
+_ = installff()
 
 st.header("Downloading Data")
 st.write("Given a search term, web-scrape Techport and SBIR databases. The first option manually uses Selenium to access the websites to receive an up-to-date csv file. The second option uses pre-scraped data to greatly improve efficiency when a user wants to query data.")
