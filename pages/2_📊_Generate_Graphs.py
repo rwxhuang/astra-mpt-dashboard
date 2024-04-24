@@ -31,7 +31,7 @@ with st.form(key='graph_form'):
 	search_phrase = st.text_input(label='Enter search phrase', value='heliophysics')
 	submit_button = st.form_submit_button(label='Display graphs')
 with st.spinner("Please wait for graphs to generate..."):
-	s = Search(search_phrase)
+	s = Search(search_phrase, None)
 	data = s.get_data()
 col1, col2 = st.columns(2)
 with col1:
