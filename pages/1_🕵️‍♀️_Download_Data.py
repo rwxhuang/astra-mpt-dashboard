@@ -3,13 +3,12 @@ from search import Search
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.os_manager import ChromeType
 
-chrome_version = "76.0.3809.68"
 def get_driver():
-    return webdriver.Chrome(service=Service(ChromeDriverManager(chrome_version).install()), options=options)		
+    return webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))	
 
 options = Options()
 options.add_argument("--disable-gpu")
