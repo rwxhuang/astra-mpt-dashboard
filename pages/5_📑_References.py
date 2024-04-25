@@ -23,13 +23,13 @@ st.markdown(
         Afreen Siddiqi, Julia Milton, Maria Cabrera, Olivier de Weck    *GLOC 2023*
     ##### Artemis Case Study: Technology System Modeling
     - [Paper] Lordos, G. and de Weck, O.L. ["Technology Roadmapping of an ISRU System for NASA Using a Medium-Fidelity System Dynamics Simulation,"](https://arc.aiaa.org/doi/abs/10.2514/6.2022-4307) AIAA 2022-4307. ASCEND 2022. October 2022.
-    ##### Artmeis Case Study: Novel Figures of Merit and System Architectures for planetary surface Robotic exploration
-    - [Paper] Lordos G., Brown M.J., Latyshev K. et al., ["WORMS: Field-Reconfigurable Robots for Extreme Lunar Terrain,"](https://www.doi.org/10.1109/AERO55745.2023.10115833) 2023 IEEE Aerospace Conference, Big Sky, MT, USA, 2023, pp. 1-21, doi: 10.1109/AERO55745.2023.10115833
     ##### Artemis Case Study: Novel Figures of Merit and System Architectures for planetary surface Human exploration
     - [Paper] Lordos G., Hoying M., AlSadah Y. et al., (2023) ["Pale Red Dot: Polis-based Architecture for the Long-term Exploration of the Red Planet”](https://rascal.nianet.org/wp-content/uploads/2023-RASC-AL-Technical-Paper-MIT-Updated.pdf), 2023 NASA RASC-AL Forum, Cocoa Beach, Florida
     - [Abstract] Lordos G., Siddiqi A., Hoying M. et al., (2023) ["A General Model of ISRU Technology Valuation and Technology Portfolio Construction for Crewed Mars Missions”](https://isruinfo.com/public/index.php?page=srr_23), Space Resources Roundtable (SRR) 2023, Golden, Colorado
     - [Paper] Lordos G., Hoying M., McKinney L., de Weck O.L., and Hoffman J.A., (2024) ["Leveraging Economies of Scale and Gains from Specialization for Robust Crewed Mars Architectures”](https://www.researchgate.net/publication/379342061_Leveraging_Economies_of_Scale_and_Gains_from_Specialization_for_Robust_Crewed_Mars_Architectures?_sg%5B0%5D=afZML3FcQu4rmNfsE9jd63Ca7fbldfqPCdtGF5unWUijdglk_op-tbO8WUjDnT8nYRcCJdCu024AEqaEoVRXt98dzQln6X9py6JXRkUY.rGCTsWxMD739LwnWDbjPh7Pra4pUXzUmaIGHsl5tBA97MHiHCK653sePocIXsRU4tyvtNj-gXtFjMAAappYfCw&_tp=eyJjb250ZXh0Ijp7ImZpcnN0UGFnZSI6ImhvbWUiLCJwYWdlIjoicHJvZmlsZSIsInByZXZpb3VzUGFnZSI6InByb2ZpbGUiLCJwb3NpdGlvbiI6InBhZ2VDb250ZW50In19), 2024 IEEE Aerospace Conference, Big Sky, MT USA, 2024
     - [PhD thesis] Lordos G., (2024), ["Engineering Robust and Autocatalytic Architectures for Human Missions to Mars”](https://hdl.handle.net/1721.1/153785), PhD Thesis, Massachusetts Institute of Technology, Cambridge, MA
+    ##### Novel Technology Strategies for Robotic Planetary Exploration
+    - [Paper] Lordos G., Brown M.J., Latyshev K. et al., ["WORMS: Field-Reconfigurable Robots for Extreme Lunar Terrain,"](https://www.doi.org/10.1109/AERO55745.2023.10115833) 2023 IEEE Aerospace Conference, Big Sky, MT, USA, 2023, pp. 1-21, doi: 10.1109/AERO55745.2023.10115833
     #### Listed below are resources used to build this application.
     - Martin, R. A., (2021). PyPortfolioOpt: portfolio optimization in Python. Journal of Open Source Software, 6(61), 3066, https://doi.org/10.21105/joss.03066
     - https://selenium-python.readthedocs.io/
