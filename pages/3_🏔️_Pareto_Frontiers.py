@@ -9,7 +9,7 @@ COLORS = ['#361c64', '#17804f', '#a8ba7a', '#0407f2', '#2a685b', '#1e8cbe', '#97
 st.set_page_config(layout="centered")
 
 st.header("Pareto Frontiers")
-st.write("#### We calculate efficient frontiers in the 2-dimensional case from NASA technology projects.")
+st.write("#### Calculate efficient frontiers in the 2-dimensional case from NASA technology projects.")
 
 def generate_scatter(scatter_dataset, frontier_dataset, x_axis, y_axis, log_x, log_y):
     fig = make_subplots()
@@ -78,6 +78,7 @@ with st.sidebar:
                 )
 fig = generate_scatter(scatter_dataset, frontier_dataset, x_axis, y_axis, log_x, log_y)
 st.plotly_chart(fig, theme="streamlit", use_container_width=True)
+st.write("Automatic example shown above: *Pareto frontiers of imagers resolution and mass for earth observation* where each scatter plot group is a 15-year period.")
 
 with st.expander('About this Application', expanded=False):
     st.write('''
