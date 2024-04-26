@@ -1,5 +1,7 @@
 import streamlit as st
 
+st.set_page_config(layout="centered")
+
 st.markdown(
     """
     # Documentation
@@ -22,8 +24,25 @@ st.markdown(
 
     The rest of this documentation will detail the 4 main functional components of the web application. 
     ## Function 1. Downloading Data
-    ## Function 2. Generate Graphs
-    ## Function 3. Pareto Frontiers
-    ## Function 4. Markowitz Portfolio Theory (MPT) 
-"""
-)
+    Given a search term, the goal is to output a dataset that contains project information from the Techport and SBIR database. As of now, 
+    the dataset only includes data from [Techport](https://techport.nasa.gov/home). As seen in the codebase, the SBIR methods aren't accessed. We have two options where the 
+    first option manually uses Selenium to access the websites to receive an up-to-date csv file. The second option uses pre-scraped data 
+    to greatly improve efficiency when a user wants to query data. Additionally, the second option allows for the use of [boolean format](https://www.scribbr.com/working-with-sources/boolean-operators/).
+
+    ### Option 1. Generate up-to-date data with Selenium web-scraper
+    While using the Selenium web-scraper generates the most up-to-date data from the 
+
+    """)
+st.image('./images/download_data.png', use_column_width="always", caption='Download web-scraped data from Techport, SBIR, etc. into one csv file for any search term.')
+st.markdown("""
+            ## Function 2. Generate Graphs
+            """)
+st.image('./images/generate_graphs.png', use_column_width="always", caption='Conveniently generate multiple visuals given a search term to produce graphs, heat maps, etc.')
+st.markdown("""
+            ## Function 3. Pareto Frontiers
+            """)
+st.image('./images/pareto_frontiers.png', use_column_width="always", caption='Calculating efficient frontiers in the 2-dimensional case from technology projects.')
+st.markdown("""
+            ## Function 4. Markowitz Portfolio Theory (MPT)
+            """)
+st.image('./images/mpt.png', use_column_width="always", caption='Automating the process of making investment decisions for technology projects.')
