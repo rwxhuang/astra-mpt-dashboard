@@ -22,18 +22,34 @@ st.markdown(
     to analyze the data go through rigorous, but accurate, procedures. While not implemented yet, we hope to have validation 
     processes to minimize calculation errors.
 
-    The rest of this documentation will detail the 4 main functional components of the web application. 
+    The rest of this documentation will detail the 4 main functional components of the web application: **Downloading Data** (1), **Generate Graphs** (2),
+   **Pareto Frontiers** (3), and **Marokwitz Portfolio Theory** (4). 
     ## Function 1. Downloading Data
-    Given a search term, the goal is to output a dataset that contains project information from the Techport and SBIR database. As of now, 
-    the dataset only includes data from [Techport](https://techport.nasa.gov/home). As seen in the codebase, the SBIR methods aren't accessed. We have two options where the 
+    Given a search term, the goal is to output a dataset that contains project information from the Techport and SBIR database. Currently, 
+    the dataset only includes data from [Techport](https://techport.nasa.gov/home). In this function, we have two options where the 
     first option manually uses Selenium to access the websites to receive an up-to-date csv file. The second option uses pre-scraped data 
     to greatly improve efficiency when a user wants to query data. Additionally, the second option allows for the use of [boolean format](https://www.scribbr.com/working-with-sources/boolean-operators/).
-
-    ### Option 1. Generate up-to-date data with Selenium web-scraper
-    While using the Selenium web-scraper generates the most up-to-date data from the 
-
     """)
 st.image('./images/download_data.png', use_column_width="always", caption='Download web-scraped data from Techport, SBIR, etc. into one csv file for any search term.')
+st.markdown("""
+    ### Option 1. Generate up-to-date data with Selenium web-scraper
+    While using the Selenium web-scraper generates the most up-to-date data from the NASA's database, it take significantly longer than Option 
+    2 because Selenium has to browse through the pages of the database live. For the search term, `"heliophysics laser"`, Option 1 takes around
+    15 seconds while Option 2 takes around 0.2 seconds.
+            
+    This option depends on the `Search` class from `search.py` and passes in the user-inputted search phrase into `search_phrase` and the 
+    Chrome driver to launch Selenium into `driver`. Then, we call the `scrape_data(self)` method to scrape the data from multiple databases 
+    (now only including Techport database). In the background, a web browser launches, browses the databases to extract the project data, and
+    inputs the project information into the outputted csv.
+            
+    ### Option 2. Generate up-to-date data with Selenium web-scraper      
+
+    This option also depends on the `Search` class from `search.py` and passes in the user-inputted search phrase into `search_phrase`. `None` 
+    is passed into `driver` since there is no Selenium web driver. Instead, it accesses the pre-proccesed Techport csv file from 
+    `/data/techport_all.csv`.
+            
+
+""")
 st.markdown("""
             ## Function 2. Generate Graphs
             """)

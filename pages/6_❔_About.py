@@ -36,6 +36,9 @@ with col2:
    with st.container(height=375, border=True):
       st.image("./images/alex.jpg")
       st.write("#### Alex Koenig \n *SM 2023, Aerospace*: Strategic Engineering Research Group")
+   with st.container(height=375, border=True):
+      st.image("./images/hailey.jpg")
+      st.write("#### Hailey D Polson \n *Undergraduate Student*: Majoring in Aerospace Engineering (16)")
 
 with col3:
    with st.container(height=375, border=True):
