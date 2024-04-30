@@ -26,8 +26,8 @@ with col1:
       st.image("./images/julia.jpg")
       st.write("#### Julia Milton \n *PhD 2023, Aeronautics and Astronautics*: SEAri")
    with st.container(height=375, border=True):
-      st.image("./images/roderick.jpg")
-      st.write("#### Roderick Huang \n *MEng Student*: Double majored in Mathematics (18) and Computer Science (6-3)")
+      st.image("./images/nadiak.png")
+      st.write("#### Nadia Khan \n *Graduate Researcher*: Technology Policy Program Masters Candidate" )
 
 with col2:
    with st.container(height=375, border=True):
@@ -45,5 +45,8 @@ with col3:
       st.image("./images/george.jpeg")
       st.markdown("""#### George Lordos \n *Research Scientist*: Strategic Engineering Research Group""")
    with st.container(height=375, border=True):
-      st.image("./images/nadiak.png")
-      st.write("#### Nadia Khan \n *Graduate Researcher*: Technology Policy Program Masters Candidate" )
+      st.image("./images/chloe.jpg")
+      st.write("#### Chloe Gentgen \n *Graduate Researcher*: Strategic Engineering Research Group, Ph.D. Candidate, MIT AeroAstro" )
+   with st.container(height=375, border=True):
+      st.image("./images/roderick.jpg")
+      st.write("#### Roderick Huang \n *MEng Student*: Double majored in Mathematics (18) and Computer Science (6-3)")
